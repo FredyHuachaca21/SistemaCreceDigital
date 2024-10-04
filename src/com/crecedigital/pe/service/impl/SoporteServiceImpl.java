@@ -12,6 +12,7 @@ import com.crecedigital.pe.service.ISoporteService;
 import com.crecedigital.pe.service.ITecnicoService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SoporteServiceImpl implements ISoporteService {
 
@@ -148,6 +149,14 @@ public class SoporteServiceImpl implements ISoporteService {
             solicitudesPendientes.offer(solicitud);
             throw new NoHayTecnicosDisponiblesException("No hay técnicos disponibles para la solicitud. Se ha puesto en cola de espera.");
         }
+    }
+
+    @Override
+    public List<SolicitudServicio> listarSolicitudesPorPrioridad() {
+        List<SolicitudServicio> todasLasSolicitudes = solicitudRepository.listarTodas();
+        return todasLasSolicitudes.stream()
+                .sorted(Comparator.comparing(SolicitudServicio::getPrioridad).reversed())
+                .collect(Collectors.toList());
     }
 
 

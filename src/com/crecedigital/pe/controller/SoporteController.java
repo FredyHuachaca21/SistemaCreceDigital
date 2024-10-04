@@ -29,28 +29,30 @@ public class SoporteController {
             int opcion = view.solicitarOpcion(
                     """
                     1. Listar Solicitudes
-                    2. Crear Solicitud
-                    3. Asignar Técnico
-                    4. Asignar Técnico Automáticamente
-                    5. Actualizar Estado de Solicitud
-                    6. Listar Técnicos
-                    7. Ver Técnicos Disponibles
-                    8. Generar Reporte de Servicios
-                    9. Ver Historial de Cambios
-                    10. Volver al Menú Principal
-                    Seleccione una opción:\s""", 1, 10);
+                    2. Listar Solicitudes por Prioridad
+                    3. Crear Solicitud
+                    4. Asignar Técnico
+                    5. Asignar Técnico Automáticamente
+                    6. Actualizar Estado de Solicitud
+                    7. Listar Técnicos
+                    8. Ver Técnicos Disponibles
+                    9. Generar Reporte de Servicios
+                    10. Ver Historial de Cambios
+                    11. Volver al Menú Principal
+                    Seleccione una opción:\s""", 1, 11);
 
             switch (opcion) {
                 case 1: listarSolicitudes(); break;
-                case 2: crearSolicitud(); break;
-                case 3: asignarTecnico(); break;
-                case 4: asignarTecnicoAutomaticamente(); break;
-                case 5: actualizarEstadoSolicitud(); break;
-                case 6: listarTecnicos(); break;
-                case 7: verTecnicosDisponibles(); break;
-                case 8: generarReporteServicios(); break;
-                case 9: verHistorialCambios(); break;
-                case 10: return;
+                case 2: listarSolicitudesPorPrioridad(); break;
+                case 3: crearSolicitud(); break;
+                case 4: asignarTecnico(); break;
+                case 5: asignarTecnicoAutomaticamente(); break;
+                case 6: actualizarEstadoSolicitud(); break;
+                case 7: listarTecnicos(); break;
+                case 8: verTecnicosDisponibles(); break;
+                case 9: generarReporteServicios(); break;
+                case 10: verHistorialCambios(); break;
+                case 11: return;
             }
             view.pausar();
         }
@@ -59,6 +61,29 @@ public class SoporteController {
     private void listarSolicitudes() {
         view.mostrarTitulo("Lista de Solicitudes");
         List<SolicitudServicio> solicitudes = soporteService.listarSolicitudes();
+        if (solicitudes.isEmpty()) {
+            view.mostrarMensaje("No hay solicitudes registradas.");
+            return;
+        }
+
+        List<String[]> datosTabla = new ArrayList<>();
+        for (SolicitudServicio solicitud : solicitudes) {
+            datosTabla.add(new String[]{
+                    String.valueOf(solicitud.getId()),
+                    solicitud.getDescripcion(),
+                    solicitud.getEstado().toString(),
+                    solicitud.getPrioridad().toString(),
+                    solicitud.getTecnicoAsignado() != null ? solicitud.getTecnicoAsignado().getNombre() : "No asignado"
+            });
+        }
+
+        String[] encabezados = {"ID", "Descripción", "Estado", "Prioridad", "Técnico"};
+        view.mostrarTabla(datosTabla, encabezados);
+    }
+
+    private void listarSolicitudesPorPrioridad() {
+        view.mostrarTitulo("Lista de Solicitudes por Prioridad");
+        List<SolicitudServicio> solicitudes = soporteService.listarSolicitudesPorPrioridad();
         if (solicitudes.isEmpty()) {
             view.mostrarMensaje("No hay solicitudes registradas.");
             return;

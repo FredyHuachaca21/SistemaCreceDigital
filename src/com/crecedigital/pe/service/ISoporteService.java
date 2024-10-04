@@ -19,4 +19,5 @@ public interface ISoporteService {
     String obtenerHistorialCambios();
     SolicitudServicio buscarSolicitud(Long solicitudId);
     void asignarTecnicoAutomaticamente(Long solicitudId);
+    List<SolicitudServicio> listarSolicitudesPorPrioridad();
 }
